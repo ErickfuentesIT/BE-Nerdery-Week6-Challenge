@@ -22,25 +22,27 @@ model Client {
 model Product {
   id          String   @id @default(uuid()) @map("id")
   clientId    String   @map("client_id")
-  client      Client   @relation(fields: [clientId], references: [id])
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
   name        String   @map("name")
   description String?  @map("description")
   stock       Int      @default(0) @map("stock")
   price       Float    @map("price")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
-  
+
   @@unique([clientId, name])
+  @@index([clientId])
   @@map("products")
 }
 
 model ApiKey {
   id         String   @id @default(uuid()) @map("id")
   clientId   String   @map("client_id")
-  client     Client   @relation(fields: [clientId], references: [id])
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
   key        String   @unique @map("key")
   expiration DateTime @map("expiration")
   createdAt  DateTime @default(now()) @map("created_at")
 
+  @@index([clientId])
   @@map("api_keys")
 }

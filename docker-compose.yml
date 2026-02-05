@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  postgres-sample:
+    image: postgres:17
+    container_name: postgres_db_week6_nerdery_challenge2
+    environment:
+      POSTGRES_PASSWORD: password123
+      POSTGRES_USER: postgres
+      POSTGRES_DB: nerdery_db_w6c2
+    restart: always
+    ports:
+      - 5432:5432
+      # add your port in case you have 5432 in use e.g 5434:5432 for 5434
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+volumes:
+  pg-data:

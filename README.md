@@ -51,7 +51,13 @@ npm install
 yarn install
 ```
 
-### 3. Create a .env file in the project root with:
+### 3. Run docker file
+
+```bash
+docker-compose up
+```
+
+### 4. Create a .env file in the project root with:
 
 ```bash
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
@@ -59,6 +65,12 @@ DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
 
 ### 4. Seed initial data
 
+```bash
+npm run prisma:migrate
+```
+```bash
+npm run prisma:generate
+```
 ```bash
 npm run prisma:seed
 ```

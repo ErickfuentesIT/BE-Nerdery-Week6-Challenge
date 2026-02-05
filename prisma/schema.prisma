@@ -27,6 +27,8 @@ model Product {
   description String?  @map("description")
   stock       Int      @default(0) @map("stock")
   price       Float    @map("price")
+  isActive    Boolean  @default(true) @map("is_active")
+  images      ProductImage[]
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -45,4 +47,16 @@ model ApiKey {
 
   @@index([clientId])
   @@map("api_keys")
+}
+
+model ProductImage {
+  id         String   @id @default(uuid()) @map("id")
+  productId  String   @map("product_id")
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url        String  
+  publicId   String   @map("public_id") 
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([productId])
+  @@map("product_images")
 }

@@ -6,6 +6,7 @@ import { typeDefs, resolvers } from './resolvers/products.resolver';
 import { validateApiKeyFromHeader } from './middlewares/api-key.middleware';
 import cookieParser from 'cookie-parser';
 import { ApiKeyService } from './services/api-key.service';
+import { GraphQLContext } from './types/context';
 
 dotenv.config();
 const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
@@ -17,21 +18,30 @@ async function start() {
 
   // PUBLIC: get API key by client id
   app.get('/api/key/:clientId', express.json(), async (req, res) => {
-    const clientId = req.params.clientId;
-    if (!clientId) return res.status(400).json({ message: 'Missing clientId' });
-    const apiKey = await ApiKeyService.findByClientId(clientId);
-    if (!apiKey) return res.status(404).json({ message: 'API key not found' });
-    return res.json({ key: apiKey.key, expiration: apiKey.expiration });
+    try {
+      const clientId = req.params.clientId;
+      if (!clientId) return res.status(400).json({ message: 'Missing clientId' });
+      const apiKey = await ApiKeyService.findByClientId(clientId);
+      if (!apiKey) return res.status(404).json({ message: 'API key not found' });
+      return res.json({ key: apiKey.key, expiration: apiKey.expiration });
+    } catch (error) {
+      console.error('Error fetching API key:', error instanceof Error ? error.message : error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
   });
 
   // GraphQL server
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: async ({ req }: { req: Request }) => {
-      // Validate api key from headers
-      const apiKey = await validateApiKeyFromHeader(req);
-      return { apiKey };
+    context: async ({ req }: { req: Request }): Promise<GraphQLContext> => {
+      try {
+        const apiKey = await validateApiKeyFromHeader(req);
+        return { apiKey };
+      } catch (error) {
+        console.error('Error building GraphQL context:', error instanceof Error ? error.message : error);
+        return { apiKey: null };
+      }
     },
   });
 

@@ -4,29 +4,31 @@ import {
   Min,
   IsInt,
   IsBoolean,
-  IsUUID,
+  IsOptional,
+  IsObject,
 } from "class-validator";
 
 export class UpdateProductDto {
-  @IsUUID()
-  @IsNotEmpty()
-  id!: string;
-
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
   name?: string;
 
   @IsString()
+  @IsOptional()
   description?: string;
 
   @IsInt()
   @Min(0)
+  @IsOptional()
   stock?: number;
 
   @IsInt()
   @Min(0)
+  @IsOptional()
   price?: number;
 
   @IsBoolean()
+  @IsOptional()
   isActive?: boolean;
 }

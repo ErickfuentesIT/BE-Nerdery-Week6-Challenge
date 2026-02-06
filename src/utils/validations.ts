@@ -1,13 +1,18 @@
-import { validate } from 'class-validator';
-import { plainToInstance } from 'class-transformer';
+import { validate } from "class-validator";
+import { plainToInstance } from "class-transformer";
 
-export async function validateDto<T extends object>(cls: new () => T, plain: Record<string, unknown>) {
+export async function validateDto<T extends object>(
+  cls: new () => T,
+  plain: Record<string, unknown>,
+) {
   const instance = plainToInstance(cls, plain);
   const errors = await validate(instance);
 
   if (errors.length > 0) {
     const first = errors[0];
-    const constraints = first.constraints ? Object.values(first.constraints).join(', ') : 'Validation error';
+    const constraints = first.constraints
+      ? Object.values(first.constraints).join(", ")
+      : "Validation error";
     throw new Error(constraints);
   }
 

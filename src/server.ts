@@ -4,9 +4,9 @@ import dotenv from 'dotenv';
 import { ApolloServer } from 'apollo-server-express';
 import { typeDefs, resolvers } from './resolvers/products.resolver';
 import { validateApiKeyFromHeader } from './middlewares/api-key.middleware';
-import cookieParser from 'cookie-parser';
-import { ApiKeyService } from './services/api-key.service';
+import { formatError } from './utils/errors';
 import { GraphQLContext } from './types/context';
+import apiKeyRoute from './routes/api-key.route';
 
 dotenv.config();
 const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
@@ -14,21 +14,9 @@ const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
 async function start() {
   const app: Application = express();
   app.use(cors());
-  app.use(cookieParser());
 
-  // PUBLIC: get API key by client id
-  app.get('/api/key/:clientId', express.json(), async (req, res) => {
-    try {
-      const clientId = req.params.clientId;
-      if (!clientId) return res.status(400).json({ message: 'Missing clientId' });
-      const apiKey = await ApiKeyService.findByClientId(clientId);
-      if (!apiKey) return res.status(404).json({ message: 'API key not found' });
-      return res.json({ key: apiKey.key, expiration: apiKey.expiration });
-    } catch (error) {
-      console.error('Error fetching API key:', error instanceof Error ? error.message : error);
-      return res.status(500).json({ message: 'Internal server error' });
-    }
-  });
+  // Routes
+  app.use('/api/key', apiKeyRoute);
 
   // GraphQL server
   const server = new ApolloServer({
@@ -39,7 +27,7 @@ async function start() {
         const apiKey = await validateApiKeyFromHeader(req);
         return { apiKey };
       } catch (error) {
-        console.error('Error building GraphQL context:', error instanceof Error ? error.message : error);
+        console.error(formatError('Error building GraphQL context', error));
         return { apiKey: null };
       }
     },

@@ -4,13 +4,11 @@ A GraphQL API for managing products and product images with GCP Cloud Storage in
 
 ## Tech Stack
 
-- **Runtime:** Node.js v18+
 - **Language:** TypeScript
 - **Server:** Express + Apollo Server (GraphQL)
 - **Database:** PostgreSQL 17
 - **ORM:** Prisma
 - **Cloud Storage:** Google Cloud Storage (signed URLs)
-- **Validation:** class-validator + class-transformer
 
 ## Project Structure
 
@@ -251,17 +249,8 @@ mutation {
 ```
 
 This removes the image from both the database and GCS.
-
-## Available Scripts
-
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start dev server with hot reload |
-| `npm run build` | Compile TypeScript to `dist/` |
-| `npm start` | Run compiled production build |
-| `npm run prisma:migrate` | Run database migrations |
-| `npm run prisma:generate` | Generate Prisma client |
-| `npm run prisma:seed` | Seed the database |
+### UML - Process to upload image to GCS
+<img width="1591" height="1563" alt="vLLDR-Cs4BtxLmnqie7OtcxHYu4KwpXDQkmMTUtuvWijJMmY5Ado8xk6Qw0_eh-mlwGZKgHbnJaLwAKw2U9xCuzl7YduP2pJrfK2vYNR8QmheLW13q9zXV_-wG6O5ouhfba91dztA7Fy1OqXQLF1Tn9ob1Rr1KwZgPGq4NU7f7sgDMt0QeVmltp889PRfI4yCy5HMWWFCp2ZTJ" src="https://github.com/user-attachments/assets/3500a7b6-15bf-4dfe-a0af-d3f1b94974d9" />
 
 ## Seed Data
 
